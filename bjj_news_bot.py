@@ -8,13 +8,12 @@ import nest_asyncio
 from datetime import datetime
 from telegram.ext import Application
 
-# Применение nest_asyncio для Jupyter
-nest_asyncio.apply()
-
 # Настройки токенов и файлов
-TELEGRAM_BOT_TOKEN = '7611379154:AAHZ_0MS34zrt3BTkl3unT4byKHTfVkdh6E'
-TELEGRAM_CHANNEL_ID = '@bjjdailynews'
-YOUTUBE_API_KEY = 'AIzaSyA0Y6oa9EmsOjHfLR1IrEPtYCWUiz2Vuks'
+import os
+
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHANNEL_ID = os.getenv('TELEGRAM_CHANNEL_ID')
+YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 
 TOPICS_FILE = 'topics.txt'
 FEEDS_FILE = 'feeds.txt'
