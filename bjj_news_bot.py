@@ -43,7 +43,7 @@ with open(QUOTES_FILE, 'r') as f:
     quotes = [line.strip() for line in f.readlines()]
 
 # Определяем текущую тему недели
-week_number = datetime.utcnow().isocalendar()[1]
+week_number = datetime.now().isocalendar()[1]
 current_topic = topics[(week_number - 1) % len(topics)]
 
 # Инициализация Telegram-бота
@@ -156,9 +156,9 @@ async def send_evening_post():
     await application.bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=text, parse_mode="Markdown")
 
 # Планирование постов
-schedule.every().day.at("12:00").do(lambda: asyncio.ensure_future(send_morning_post()))
-schedule.every().day.at("16:00").do(lambda: asyncio.ensure_future(send_afternoon_post()))
-schedule.every().day.at("00:00").do(lambda: asyncio.ensure_future(send_evening_post()))
+schedule.every().day.at("08:00").do(lambda: asyncio.ensure_future(send_morning_post()))
+schedule.every().day.at("14:00").do(lambda: asyncio.ensure_future(send_afternoon_post()))
+schedule.every().day.at("20:00").do(lambda: asyncio.ensure_future(send_evening_post()))
 
 # Основной цикл
 async def scheduler_loop():
@@ -173,7 +173,6 @@ async def main():
     await scheduler_loop()
 
 if __name__ == "__main__":
-    import nest_asyncio
-    nest_asyncio.apply()
     asyncio.run(main())
+
 
