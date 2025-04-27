@@ -1,4 +1,3 @@
-!pip install python-telegram-bot nest_asyncio feedparser schedule requests
 # Импорт библиотек
 import asyncio
 import feedparser
