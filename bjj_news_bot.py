@@ -156,9 +156,9 @@ async def send_evening_post():
     await application.bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=text, parse_mode="Markdown")
 
 # Планирование постов
-schedule.every().day.at("08:00").do(lambda: asyncio.ensure_future(send_morning_post()))
-schedule.every().day.at("14:00").do(lambda: asyncio.ensure_future(send_afternoon_post()))
-schedule.every().day.at("20:00").do(lambda: asyncio.ensure_future(send_evening_post()))
+schedule.every().day.at("12:00").do(lambda: asyncio.ensure_future(send_morning_post()))
+schedule.every().day.at("16:00").do(lambda: asyncio.ensure_future(send_afternoon_post()))
+schedule.every().day.at("00:00").do(lambda: asyncio.ensure_future(send_evening_post()))
 
 # Основной цикл
 async def scheduler_loop():
