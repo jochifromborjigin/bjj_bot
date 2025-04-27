@@ -173,4 +173,6 @@ async def main():
     print(f"🤖 BJJ Daily News Bot is running! Current topic: {current_topic}")
     await scheduler_loop()
 
-await main()
+if __name__ == "__main__":
+    asyncio.run(main())
+
