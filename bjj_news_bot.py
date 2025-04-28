@@ -118,7 +118,6 @@ def find_video(topic, used_links):
 
     return None, None
 
-
 # Утренний пост: статья или цитата
 async def send_morning_post():
     article_link, article_title = find_article(current_topic, used_links)
@@ -126,9 +125,13 @@ async def send_morning_post():
         text = f"🌅 Good morning, warriors!\n\nToday's focus: *{current_topic}*\n\n📖 Article: [{article_title}]({article_link})\n\nStay strong and keep learning! 💪 #BJJ"
         save_used_link(article_link)
     else:
-        quote = random.choice(quotes)
-        text = f"🌅 Good morning, warriors!\n\n*Motivational thought:*\n\n_{quote}_\n\n#BJJ #Mindset"
-
+        video_link, video_title = find_video(current_topic, used_links)
+        if video_link:
+            text = f"🌅 Good morning, warriors!\n\nToday's resource on *{current_topic}*:\n\n🎥 Video: [{video_title}]({video_link})\n\nVisualize and conquer! 🔥 #BJJ"
+            save_used_link(video_link)
+        else:
+            quote = random.choice(quotes)
+            text = f"🌅 Good morning, warriors!\n\n*Motivational thought:*\n\n_{quote}_\n\n#BJJ #Mindset"
     await application.bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=text, parse_mode="Markdown")
 
 # Дневной пост: подкаст или цитата
@@ -138,9 +141,13 @@ async def send_afternoon_post():
         text = f"🎧 Midday learning time!\n\nTopic: *{current_topic}*\n\n🎙️ Podcast: [{podcast_title}]({podcast_link})\n\nSharpen your mind while you rest! 🧠 #BJJ"
         save_used_link(podcast_link)
     else:
-        quote = random.choice(quotes)
-        text = f"🎧 Midday break inspiration!\n\n*Quote:*\n\n_{quote}_\n\n#BJJ #Inspiration"
-
+        video_link, video_title = find_video(current_topic, used_links)
+        if video_link:
+            text = f"🎧 Midday resource on *{current_topic}*:\n\n🎥 Video: [{video_title}]({video_link})\n\nLearn, adapt, evolve! 🚀 #BJJ"
+            save_used_link(video_link)
+        else:
+            quote = random.choice(quotes)
+            text = f"🎧 Midday break inspiration!\n\n*Quote:*\n\n_{quote}_\n\n#BJJ #Inspiration"
     await application.bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=text, parse_mode="Markdown")
 
 # Вечерний пост: видео или цитата
@@ -156,9 +163,9 @@ async def send_evening_post():
     await application.bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=text, parse_mode="Markdown")
 
 # Планирование постов
-schedule.every().day.at("08:00").do(lambda: asyncio.ensure_future(send_morning_post()))
-schedule.every().day.at("14:00").do(lambda: asyncio.ensure_future(send_afternoon_post()))
-schedule.every().day.at("20:00").do(lambda: asyncio.ensure_future(send_evening_post()))
+schedule.every().day.at("12:00").do(lambda: asyncio.ensure_future(send_morning_post()))
+schedule.every().day.at("18:00").do(lambda: asyncio.ensure_future(send_afternoon_post()))
+schedule.every().day.at("00:00").do(lambda: asyncio.ensure_future(send_evening_post()))
 
 # Основной цикл
 async def scheduler_loop():
