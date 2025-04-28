@@ -32,6 +32,11 @@ def save_used_link(link):
     with open(USED_LINKS_FILE, 'a') as f:
         f.write(link + '\n')
 
+# Проверка и создание файла used_links.txt если он отсутствует
+if not os.path.exists(USED_LINKS_FILE):
+    with open(USED_LINKS_FILE, 'w') as f:
+        pass  # Просто создаём пустой файл
+        
 used_links = load_used_links()
 
 # Загрузка тем недели
