@@ -38,9 +38,6 @@ if not os.path.exists(USED_LINKS_FILE):
         pass  # Просто создаём пустой файл
         
 used_links = load_used_links()
-if link not in used_links:
-    save_used_link(link)
-    used_links.add(link)
 
 # Загрузка тем недели
 with open(TOPICS_FILE, 'r') as f:
