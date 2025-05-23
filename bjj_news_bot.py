@@ -67,6 +67,8 @@ def find_article(topic, used_links):
         feed = feedparser.parse(url)
         for entry in feed.entries:
             if topic.lower() in entry.title.lower() and entry.link not in used_links:
+                save_used_link(entry.link)
+                used_links.add(entry.link)
                 return entry.link, entry.title
 
     # Ищем любую статью
@@ -74,6 +76,8 @@ def find_article(topic, used_links):
         feed = feedparser.parse(url)
         for entry in feed.entries:
             if entry.link not in used_links:
+                save_used_link(entry.link)
+                used_links.add(entry.link)
                 return entry.link, entry.title
 
     return None, None
