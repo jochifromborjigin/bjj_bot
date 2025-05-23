@@ -118,8 +118,8 @@ def find_video(topic, used_links):
             video_url = f"https://www.youtube.com/watch?v={video_id}"
             video_title = item['snippet']['title']
             if video_url not in used_links:
-                save_used_link(entry.link)
-                used_links.add(entry.link)
+                save_used_link(video_url)
+                used_links.add(video_url)
                 return video_url, video_title
 
     # Ищем любой BJJ-видео, если по теме нет
@@ -132,8 +132,8 @@ def find_video(topic, used_links):
             video_url = f"https://www.youtube.com/watch?v={video_id}"
             video_title = item['snippet']['title']
             if video_url not in used_links:
-                save_used_link(entry.link)
-                used_links.add(entry.link)
+                save_used_link(video_url)
+                used_links.add(video_url)
                 return video_url, video_title
 
     return None, None
@@ -143,12 +143,10 @@ async def send_morning_post():
     article_link, article_title = find_article(current_topic, used_links)
     if article_link:
         text = f"🌅 Good morning, warriors!\n\nToday's focus: *{current_topic}*\n\n📖 Article: [{article_title}]({article_link})\n\nStay strong and keep learning! 💪 #BJJ"
-        save_used_link(article_link)
     else:
         video_link, video_title = find_video(current_topic, used_links)
         if video_link:
             text = f"🌅 Good morning, warriors!\n\nToday's resource on *{current_topic}*:\n\n🎥 Video: [{video_title}]({video_link})\n\nVisualize and conquer! 🔥 #BJJ"
-            save_used_link(video_link)
         else:
             quote = random.choice(quotes)
             text = f"🌅 Good morning, warriors!\n\n*Motivational thought:*\n\n_{quote}_\n\n#BJJ #Mindset"
@@ -159,15 +157,14 @@ async def send_afternoon_post():
     podcast_link, podcast_title = find_podcast(current_topic, used_links)
     if podcast_link:
         text = f"🎧 Midday learning time!\n\nTopic: *{current_topic}*\n\n🎙️ Podcast: [{podcast_title}]({podcast_link})\n\nSharpen your mind while you rest! 🧠 #BJJ"
-        save_used_link(podcast_link)
     else:
         video_link, video_title = find_video(current_topic, used_links)
         if video_link:
             text = f"🎧 Midday resource on *{current_topic}*:\n\n🎥 Video: [{video_title}]({video_link})\n\nLearn, adapt, evolve! 🚀 #BJJ"
-            save_used_link(video_link)
         else:
             quote = random.choice(quotes)
             text = f"🎧 Midday break inspiration!\n\n*Quote:*\n\n_{quote}_\n\n#BJJ #Inspiration"
+            
     await application.bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=text, parse_mode="Markdown")
 
 # Вечерний пост: видео или цитата
@@ -175,7 +172,6 @@ async def send_evening_post():
     video_link, video_title = find_video(current_topic, used_links)
     if video_link:
         text = f"🌙 Night drilling!\n\nFocus: *{current_topic}*\n\n🎥 Video: [{video_title}]({video_link})\n\nVisualize. Drill. Improve! 🔥 #BJJ"
-        save_used_link(video_link)
     else:
         quote = random.choice(quotes)
         text = f"🌙 Night inspiration!\n\n*Reflection:*\n\n_{quote}_\n\n#BJJ #Philosophy"
