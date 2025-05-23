@@ -92,6 +92,8 @@ def find_podcast(topic, used_links):
         feed = feedparser.parse(url)
         for entry in feed.entries:
             if ('podcast' in entry.title.lower() or 'episode' in entry.title.lower()) and topic.lower() in entry.title.lower() and entry.link not in used_links:
+                save_used_link(entry.link)
+                used_links.add(entry.link)
                 return entry.link, entry.title
 
     # Ищем любой подкаст
@@ -99,6 +101,8 @@ def find_podcast(topic, used_links):
         feed = feedparser.parse(url)
         for entry in feed.entries:
             if ('podcast' in entry.title.lower() or 'episode' in entry.title.lower()) and entry.link not in used_links:
+                save_used_link(entry.link)
+                used_links.add(entry.link)
                 return entry.link, entry.title
 
     return None, None
@@ -114,6 +118,8 @@ def find_video(topic, used_links):
             video_url = f"https://www.youtube.com/watch?v={video_id}"
             video_title = item['snippet']['title']
             if video_url not in used_links:
+                save_used_link(entry.link)
+                used_links.add(entry.link)
                 return video_url, video_title
 
     # Ищем любой BJJ-видео, если по теме нет
@@ -126,6 +132,8 @@ def find_video(topic, used_links):
             video_url = f"https://www.youtube.com/watch?v={video_id}"
             video_title = item['snippet']['title']
             if video_url not in used_links:
+                save_used_link(entry.link)
+                used_links.add(entry.link)
                 return video_url, video_title
 
     return None, None
