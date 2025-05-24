@@ -4,6 +4,8 @@ import feedparser
 import random
 import schedule
 import requests
+import base64
+import json
 import nest_asyncio
 import subprocess
 from datetime import datetime
@@ -30,21 +32,49 @@ def load_used_links():
         return set()
 
 def save_used_link(link):
-    with open(USED_LINKS_FILE, 'a') as f:
-        f.write(link + '\n')
+    repo_owner = "jochifromborjigin"
+    repo_name = "bjj_bot"
+    file_path = "used_links.txt"
+    branch = "main"
+    token = os.getenv("bjj_bot")
 
-    try:
-        subprocess.run(["git", "config", "--global", "user.name", "bjj-bot"], check=True)
-        subprocess.run(["git", "config", "--global", "user.email", "bjj-bot@users.noreply.github.com"], check=True)
-        subprocess.run(["git", "add", USED_LINKS_FILE], check=True)
-        subprocess.run(["git", "commit", "-m", f"Add used link: {link}"], check=True)
-        subprocess.run(
-            ["git", "push", f"https://{os.getenv('bjj_bot')}@github.com/jochifromborjigin/bjj_bot.git"],
-            check=True,
-        )
-        print(f"✅ Git pushed link: {link}")
-    except Exception as e:
-        print(f"❌ Git push failed: {e}")
+    api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{file_path}"
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    # Получаем содержимое файла
+    response = requests.get(api_url, headers=headers)
+    if response.status_code != 200:
+        print("❌ Не удалось получить файл:", response.text)
+        return
+
+    data = response.json()
+    sha = data["sha"]
+    decoded = base64.b64decode(data["content"]).decode()
+    lines = set(decoded.strip().split("\n"))
+
+    if link in lines:
+        return  # уже есть
+
+    lines.add(link)
+    updated_content = "\n".join(lines)
+    b64_content = base64.b64encode(updated_content.encode()).decode()
+
+    # Отправляем обновление
+    update_data = {
+        "message": f"Add used link: {link}",
+        "content": b64_content,
+        "sha": sha,
+        "branch": branch
+    }
+
+    r = requests.put(api_url, headers=headers, data=json.dumps(update_data))
+    if r.status_code == 200 or r.status_code == 201:
+        print(f"✅ Ссылка сохранена и запушена: {link}")
+    else:
+        print("❌ Ошибка при обновлении файла:", r.status_code, r.text)
 
 # Проверка и создание файла used_links.txt если он отсутствует
 if not os.path.exists(USED_LINKS_FILE):
