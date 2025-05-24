@@ -5,6 +5,7 @@ import random
 import schedule
 import requests
 import nest_asyncio
+import subprocess
 from datetime import datetime
 from telegram.ext import Application
 
@@ -31,6 +32,19 @@ def load_used_links():
 def save_used_link(link):
     with open(USED_LINKS_FILE, 'a') as f:
         f.write(link + '\n')
+
+    try:
+        subprocess.run(["git", "config", "--global", "user.name", "bjj-bot"], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", "bjj-bot@users.noreply.github.com"], check=True)
+        subprocess.run(["git", "add", USED_LINKS_FILE], check=True)
+        subprocess.run(["git", "commit", "-m", f"Add used link: {link}"], check=True)
+        subprocess.run(
+            ["git", "push", f"https://{os.getenv('bjj_bot')}@github.com/jochifromborjigin/bjj_bot.git"],
+            check=True,
+        )
+        print(f"✅ Git pushed link: {link}")
+    except Exception as e:
+        print(f"❌ Git push failed: {e}")
 
 # Проверка и создание файла used_links.txt если он отсутствует
 if not os.path.exists(USED_LINKS_FILE):
