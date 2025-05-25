@@ -156,6 +156,23 @@ async def main():
     await application.initialize()
     await application.start()
     logger.info(f"🤖 BJJ Bot запущен! Тема недели: {current_topic}")
+        # 🔍 Тестируем GitHub токен
+    token = os.getenv("bjj_bot")
+    if not token:
+        logger.error("❌ Переменная окружения 'bjj_bot' не установлена!")
+    else:
+        logger.info("✅ Переменная 'bjj_bot' загружена.")
+        # Тестовый запрос к GitHub
+        test_headers = {
+            "Authorization": f"token {token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        test_resp = requests.get("https://api.github.com/user", headers=test_headers)
+        if test_resp.status_code == 200:
+            logger.info(f"✅ Успешно авторизован как {test_resp.json().get('login')}")
+        else:
+            logger.error(f"❌ GitHub авторизация не удалась: {test_resp.text}")
+
     await scheduler()
 
 if __name__ == "__main__":
