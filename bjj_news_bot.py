@@ -8,9 +8,6 @@ import nest_asyncio
 from datetime import datetime
 from telegram.ext import Application
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHANNEL_ID = os.getenv('TELEGRAM_CHANNEL_ID')
