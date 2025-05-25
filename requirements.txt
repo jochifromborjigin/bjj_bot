@@ -4,4 +4,3 @@ feedparser
 requests
 google-api-python-client
 nest_asyncio
-python-dotenv
