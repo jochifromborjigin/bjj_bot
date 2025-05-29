@@ -89,7 +89,8 @@ def save_used_link(link):
 
     r = requests.put(api_url, headers=headers, data=json.dumps(update_data))
     if r.status_code in [200, 201]:
-        print(f"✅ Ссылка сохранена и запушена: {link}"
+        print(f"✅ Ссылка сохранена и запушена: {link}")
+        used_links.add(link)
     else:
         print("❌ Ошибка при обновлении файла:", r.status_code, r.text)
 
