@@ -19,10 +19,35 @@ QUOTES_FILE = 'quotes.txt'
 USED_LINKS_FILE = 'used_links.txt'
 
 def load_used_links():
+    repo_owner = "jochifromborjigin"
+    repo_name = "bjj_bot"
+    file_path = "used_links.txt"
+    token = os.getenv("bjj_bot")
+    api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{file_path}"
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
     try:
-        with open(USED_LINKS_FILE, 'r') as f:
-            return set(f.read().splitlines())
-    except FileNotFoundError:
+        response = requests.get(api_url, headers=headers)
+        if response.status_code != 200:
+            print("❌ Не удалось загрузить used_links.txt из GitHub:", response.text)
+            return set()
+
+        data = response.json()
+        decoded = base64.b64decode(data["content"]).decode().strip()
+        lines = set(decoded.split("\n"))
+
+        # Сохраняем локально для кэша
+        with open(USED_LINKS_FILE, 'w') as f:
+            f.write("\n".join(lines))
+
+        print(f"✅ Загружено {len(lines)} ссылок из GitHub в used_links")
+        return lines
+
+    except Exception as e:
+        print("❌ Ошибка при загрузке used_links.txt:", e)
         return set()
 
 def save_used_link(link):
@@ -190,13 +215,13 @@ async def scheduler_loop():
     while True:
         now = datetime.now().strftime("%H:%M")
         if now != last_sent:
-            if now == "12:00":
+            if now == "04:49":
                 await send_morning_post()
                 last_sent = now
-            elif now == "18:00":
+            elif now == "04:50":
                 await send_afternoon_post()
                 last_sent = now
-            elif now == "00:00":
+            elif now == "04:51":
                 await send_evening_post()
                 last_sent = now
         await asyncio.sleep(10)
