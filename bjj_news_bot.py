@@ -215,13 +215,13 @@ async def scheduler_loop():
     while True:
         now = datetime.now().strftime("%H:%M")
         if now != last_sent:
-            if now == "04:49":
+            if now == "04:57":
                 await send_morning_post()
                 last_sent = now
-            elif now == "04:50":
+            elif now == "04:58":
                 await send_afternoon_post()
                 last_sent = now
-            elif now == "04:51":
+            elif now == "04:59":
                 await send_evening_post()
                 last_sent = now
         await asyncio.sleep(10)
